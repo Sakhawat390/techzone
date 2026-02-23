@@ -17,22 +17,24 @@ export const uploadImage = upload.single('image');
 
 export const handleImageUpload = async (req: Request, res: Response) => {
   try {
-    if (!req.file) {
+    if (!(req as any).file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const result = await cloudinary.uploader.upload_stream(
-      { resource_type: 'auto' },
-      (error, result) => {
-        if (error) {
-          return res.status(500).json({ message: 'Image upload failed', error });
-        }
-        res.status(200).json({ message: 'Image uploaded successfully', url: result.secure_url });
-      }
-    );
+    const streamUpload = (file: any) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error: any, result: any) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
+        file.stream.pipe(stream);
+      });
+    };
 
-    req.file.stream.pipe(result);
+    const result: any = await streamUpload((req as any).file);
+    res.status(200).json({ message: 'Image uploaded successfully', url: result.secure_url });
   } catch (error) {
-    res.status(500).json({ message: 'An error occurred', error });
+    const err = error as any;
+    res.status(500).json({ message: 'An error occurred', error: err?.message || err });
   }
 };

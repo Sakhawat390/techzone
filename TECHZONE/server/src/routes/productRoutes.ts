@@ -6,7 +6,7 @@ import {
   updateProduct,
   deleteProduct,
 } from '../controllers/productController';
-import { authMiddleware } from '../middleware/auth';
+import { protect } from '../middleware/auth';
 
 const router = Router();
 
@@ -15,8 +15,8 @@ router.get('/', getAllProducts);
 router.get('/:id', getProductById);
 
 // Protected routes
-router.post('/', authMiddleware, createProduct);
-router.put('/:id', authMiddleware, updateProduct);
-router.delete('/:id', authMiddleware, deleteProduct);
+router.post('/', protect, createProduct);
+router.put('/:id', protect, updateProduct);
+router.delete('/:id', protect, deleteProduct);
 
 export default router;

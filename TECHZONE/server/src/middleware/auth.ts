@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const protect = (req: Request, res: Response, next: NextFunction) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
@@ -11,7 +10,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-        req.user = decoded; // Assuming the decoded token contains user information
+        (req as any).user = decoded; // attach decoded payload
         next();
     } catch (error) {
         res.status(400).json({ message: 'Invalid token.' });

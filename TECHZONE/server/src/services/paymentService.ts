@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
-import { Order } from '../models/Order';
+import Order from '../models/Order';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2020-08-27',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {});
 
 export const createPaymentIntent = async (req: Request, res: Response) => {
   const { amount, currency } = req.body;
@@ -17,7 +15,8 @@ export const createPaymentIntent = async (req: Request, res: Response) => {
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const err = error as any;
+    res.status(500).json({ error: err?.message || err });
   }
 };
 
@@ -37,6 +36,7 @@ export const confirmPayment = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: 'Payment confirmed', order });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const err = error as any;
+    res.status(500).json({ error: err?.message || err });
   }
 };

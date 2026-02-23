@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import productRoutes from './routes/productRoutes';
 import orderRoutes from './routes/orderRoutes';
-import { errorHandler } from './middleware/errorHandler';
+import errorHandler from './middleware/errorHandler';
 
 dotenv.config();
 

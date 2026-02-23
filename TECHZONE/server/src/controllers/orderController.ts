@@ -8,7 +8,8 @@ export const createOrder = async (req: Request, res: Response) => {
         const savedOrder = await newOrder.save();
         res.status(201).json(savedOrder);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        const err = error as any;
+        res.status(500).json({ message: err?.message || err });
     }
 };
 
@@ -19,7 +20,8 @@ export const getOrderById = async (req: Request, res: Response) => {
         if (!order) return res.status(404).json({ message: 'Order not found' });
         res.status(200).json(order);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        const err = error as any;
+        res.status(500).json({ message: err?.message || err });
     }
 };
 
@@ -29,7 +31,20 @@ export const getAllOrders = async (req: Request, res: Response) => {
         const orders = await Order.find();
         res.status(200).json(orders);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        const err = error as any;
+        res.status(500).json({ message: err?.message || err });
+    }
+};
+
+// Get all orders for a specific user
+export const getUserOrders = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
+        const orders = await Order.find({ user: userId });
+        res.status(200).json(orders);
+    } catch (error) {
+        const err = error as any;
+        res.status(500).json({ message: err?.message || err });
     }
 };
 
@@ -40,7 +55,8 @@ export const updateOrder = async (req: Request, res: Response) => {
         if (!updatedOrder) return res.status(404).json({ message: 'Order not found' });
         res.status(200).json(updatedOrder);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        const err = error as any;
+        res.status(500).json({ message: err?.message || err });
     }
 };
 
@@ -51,6 +67,7 @@ export const deleteOrder = async (req: Request, res: Response) => {
         if (!deletedOrder) return res.status(404).json({ message: 'Order not found' });
         res.status(200).json({ message: 'Order deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        const err = error as any;
+        res.status(500).json({ message: err?.message || err });
     }
 };

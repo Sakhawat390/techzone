@@ -1,15 +1,15 @@
-import { body, validationResult } from 'express-validator';
-
+import * as expressValidator from 'express-validator';
+import { Request, Response, NextFunction } from 'express';
 export const validateUserRegistration = [
-    body('username')
+    expressValidator.body('username')
         .notEmpty()
         .withMessage('Username is required')
         .isLength({ min: 3 })
         .withMessage('Username must be at least 3 characters long'),
-    body('email')
+    expressValidator.body('email')
         .isEmail()
         .withMessage('Invalid email format'),
-    body('password')
+    expressValidator.body('password')
         .notEmpty()
         .withMessage('Password is required')
         .isLength({ min: 6 })
@@ -17,32 +17,32 @@ export const validateUserRegistration = [
 ];
 
 export const validateProductCreation = [
-    body('name')
+    expressValidator.body('name')
         .notEmpty()
         .withMessage('Product name is required'),
-    body('price')
+    expressValidator.body('price')
         .isNumeric()
         .withMessage('Price must be a number')
         .notEmpty()
         .withMessage('Price is required'),
-    body('description')
+    expressValidator.body('description')
         .notEmpty()
         .withMessage('Description is required'),
 ];
 
 export const validateOrderPlacement = [
-    body('userId')
+    expressValidator.body('userId')
         .notEmpty()
         .withMessage('User ID is required'),
-    body('products')
+    expressValidator.body('products')
         .isArray()
         .withMessage('Products must be an array')
         .notEmpty()
         .withMessage('Products are required'),
 ];
 
-export const validateRequest = (req, res, next) => {
-    const errors = validationResult(req);
+export const validateRequest = (req: Request, res: Response, next: NextFunction) => {
+    const errors = expressValidator.validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
