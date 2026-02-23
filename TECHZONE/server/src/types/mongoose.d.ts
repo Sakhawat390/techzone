@@ -1,22 +1,14 @@
 declare module 'mongoose' {
   // Minimal ambient declarations for projects that don't have @types/mongoose.
-  // Provide a generic `Schema` so `new Schema<T>(...)` is allowed.
+  // These keep imports like `import { Schema, model, Document } from 'mongoose'` working.
   export type Document = any;
-
-  export class Schema<T = any> {
-    constructor(definition?: any, options?: any);
-  }
-
-  export class Model<T = any> {
-    constructor(doc?: any);
-  }
-
-  export function model<T = any>(name: string, schema?: Schema<any>): Model<T>;
+  export const Schema: any;
+  export function model<T = any>(name: string, schema?: any): T;
   export const Types: any;
   export function connect(uri: string, options?: any): Promise<any>;
 
   const mongoose: {
-    Schema: typeof Schema;
+    Schema: any;
     model: typeof model;
     Types: any;
     connect: typeof connect;
